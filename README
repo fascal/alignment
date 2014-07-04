@@ -1,0 +1,16 @@
+1. viz_align.py
+Text-only Alignment Vizualization Tool
+Usage:
+viz_align.py [options] <e-corpus> <f-corpus> <alignment1> [<alignment2>]
+ options:
+        -d, --diff     only show sentence pairs with different alignments
+        --GB           use GB encoding (default: UTF-8)
+	-e		foreign language is european			
+
+e.g.:
+./viz_align.py --GB 10.e 10.f 10.union 10.grow
+
+2. align_tool.py
+Heuristic Symmetrization of bidirectional alignments
+
+3. split_align.py
