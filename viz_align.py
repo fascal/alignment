@@ -147,7 +147,30 @@ if __name__ == "__main__":
 
 		if phrase:
 			print "#", i
-			phraseO.printAlignment(alignment)
+			rectlist = phraseO.printAlignment(alignment)
+			for r in rectlist:
+				alignlist = r.alignlist
+				list1 = []
+				list2 = []
+				for pos in alignlist:
+					list1 = list1 + [pos[0]]
+					list2 = list2 + [pos[1]]
+				l1 = ""
+				l2 = ""
+				prev = ""
+				for p in list1:
+					if p == prev:
+						continue
+					l1 = l1 + etext[p] + " "
+				prev = ""
+				for p in list2:
+					if prev == p:
+						continue
+					l2 = l2 + ftext[p] + " "
+				print l1
+				print l2
+
+
 
 			continue;
 		if goto is not None:

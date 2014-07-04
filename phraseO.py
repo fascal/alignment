@@ -25,25 +25,44 @@ def printAlignment(alignment):
 
 	while head != tail:
 		current = rectlist[tail]
-		nr = findAdjRect(current, rectlist)
-		if nr == None:
+		newrect = findAdjRect(current, rectlist)
+		print "newrect = ", newrect
+		if newrect == [None, None]:
 			tail = tail + 1
 			continue
-		nr = nr.combineRects([current])
+		#newrect = newrect.combineRects([current])
+		newrect = current.combineRects(newrect)
+		print "newrect = ", newrect
 # need to get a rect constructor that combines two rects
-		if nr != None and nr not in rectlist:
-			rectlist = rectlist + [nr]
-			#print "current", current, "nr", nr
+		if newrect != None and newrect not in rectlist:
+			rectlist = rectlist + [newrect]
+			#print "current", current, "newrect", newrect
 			#print rectlist
 			head = head + 1
 		tail = tail + 1
-	for r in rectlist:
-		print r.alignlist
+
+	return rectlist
+	# for r in rectlist:
+	# 	# print r.alignlist
+	# 	list1 = []
+	# 	list2 = []
+	# 	for rr in r.alignlist:
+	# 		list1 = list1 + 
 		
 	
 def findAdjRect(rect, rectlist):
-	x = rect.upperleft[1] + rect.width
-	y = rect.upperleft[0] + rect.height
+	list = []
+	x = rect.upperleft[0] + rect.height
+	y = rect.upperleft[1] + rect.width
+	list = list  + [findAdjRectByCorner(rect, rectlist, x, y)]
+	x = rect.upperleft[0] - 1
+	y = rect.upperleft[1] + rect.width
+	list = list + [findAdjRectByCorner(rect, rectlist, x, y)]
+	return list
+	# print "rect = ", rect
+	# print "rectlist = ", rectlist
+	# print "list = ", list
+def findAdjRectByCorner(rect, rectlist, x, y):
 	for r in rectlist:
 		if r == rect:
 			continue
@@ -53,7 +72,6 @@ def findAdjRect(rect, rectlist):
 			#	print r.upperleft, r.alignlist
 				return r
 	return None
-
 def phrasePairing(alignments):
 
 	for align in alignments:
@@ -160,8 +178,8 @@ class Rect:
 				if pos[1] > ymax:
 					ymax = pos[1] 
 			self.upperleft = (xmin, ymin)
-			self.width = xmax - xmin + 1
-			self.height = ymax - ymin + 1
+			self.height = xmax - xmin + 1
+			self.width = ymax - ymin + 1
 			self.alignlist = ul
 			
 	def __repr__(self):
@@ -179,6 +197,8 @@ class Rect:
 	def combineRects(self, rectlist):
 		list = self.alignlist;
 		for rect in rectlist:
+			if rect == None:
+				continue
 			list = list + rect.alignlist
 		return Rect(list)
 
