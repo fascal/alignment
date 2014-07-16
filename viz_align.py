@@ -12,8 +12,8 @@ import sys
 import time
 import copy
 import math
-import phraseO
-
+import ph2
+import cProfile
 from align_tool import *
 
 logs = sys.stderr
@@ -98,11 +98,10 @@ if __name__ == "__main__":
 	batch = False
 	first = None
 	cutoff = None
-	phrase = False
 	import getopt
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], "dibf:m:e",\
-								   ["diff", "GB", "inv", "batch", "first=", "euro", "p"])
+								   ["diff", "GB", "inv", "batch", "first=", "euro"])
 	except:
 		usage()
 	for o, a in opts:
@@ -120,8 +119,6 @@ if __name__ == "__main__":
 			cutoff = int(a)
 		elif o in ["-e", "--euro"]:
 			coding = 2
-		elif o in ["--p"]:
-			phrase = True
 		else:
 			usage()
 
@@ -137,55 +134,33 @@ if __name__ == "__main__":
 
 	goto = None
 	for i, line in enumerate(alignfile):
+		# if i != 2:
+		# 	continue
 		etext, ftext = efile.readline().split(), ffile.readline().split()
 		alignment = get_alignment(line, i, len(etext), len(ftext), inverse)
+
 		if comparefile:
 			compareline = comparefile.readline()
 			another = get_alignment(compareline, i, len(etext), len(ftext), inverse)
 		else:
 			another = None
 
-		if phrase:
-			print "#", i
-			rectlist = phraseO.printAlignment(alignment)
-			for r in rectlist:
-				alignlist = r.alignlist
-				list1 = []
-				list2 = []
-				for pos in alignlist:
-					list1 = list1 + [pos[0]]
-					list2 = list2 + [pos[1]]
-				l1 = ""
-				l2 = ""
-				prev = ""
-				for p in list1:
-					if p == prev:
-						continue
-					l1 = l1 + etext[p] + " "
-				prev = ""
-				for p in list2:
-					if prev == p:
-						continue
-					l2 = l2 + ftext[p] + " "
-				print l1
-				print l2
-
-
-
-			continue;
 		if goto is not None:
 			if i + 1 < goto:
 				continue
 			else:
 				goto = None
-
-		
+		print "#", i
+		ph2.extractPhrase(alignment, etext, ftext)
+		continue
 		if not another or not only_diff or alignment != another:
 			show(etext, ftext, alignment, another)	
 
 		if cutoff is not None and len(etext) > cutoff:
 			continue
-		
+		ph2.extractPhrase(alignment, etext, ftext)
+		#cProfile.run("ph2.extractPhrase(alignment, etext, ftext)")
+		continue
 		print "sentence %d:" % (i+1),
 		if another:
 			a_b = alignment - another
@@ -218,5 +193,5 @@ if __name__ == "__main__":
 
 		if first is not None and i + 1 >= first:
 			break
-				
+			
 	

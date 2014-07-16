@@ -1,1 +1,0 @@
-Mary did not slap the green witch
